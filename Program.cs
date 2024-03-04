@@ -1,86 +1,149 @@
-﻿using System;
-using CsvHelper;
-using CSVReader_Class;
+﻿using CsvHelper;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
-
-class Program
+using System.IO;
+namespace FileStream
 {
-   static  bool IsExist(string path)
+
+    class Program
     {
-        if (File.Exists(path))
-        {
-            return true;
-        }
-        else 
-        {
-            return false;
-        }
-    }
     static void Main(string[] args)
-    {
-         // Students
-            var students = new List<Student>();
-        string fileName = "C:\\Users\\Hp\\source\\repos\\FileStream\\students.csv";
-        // Read the contents of the CSV files as individual lines
-        if (IsExist(fileName))
         {
-            string[] csvLines = System.IO.File.ReadAllLines(fileName);
-           
+            
+            // Define delegates for parsing student and course records
+            Func<string, ParseStudent> parseStudent = line => new ParseStudent(line);
+            Func<string, ParseCourse> parseCourse = line => new ParseCourse(line);
+            Func<string, ParseStudentCourses> parseStudentCourse = line => new ParseStudentCourses(line);
 
-            // Split each row into column data
-            for (int i = 1; i < csvLines.Length; i++)
+            // Read students from CSV
+            var students = ReadFromCSv("C:\\Users\\Hp\\source\\repos\\FileStream\\students.csv", parseStudent);
+
+            // Display students
+            Console.WriteLine("Students:");
+            foreach (var student in students)
             {
-                Student st = new Student(csvLines[i]);
-                students.Add(st);
+                Console.WriteLine(student);
             }
 
-            for (int i = 0; i < students.Count; i++)
+            // Read courses from CSV
+            var courses = ReadFromCSv("C:\\Users\\Hp\\source\\repos\\FileStream\\Courses.csv", parseCourse);
+
+            // Display courses
+            Console.WriteLine("\nCourses:");
+            foreach (var course in courses)
             {
-                Console.WriteLine(students[i]);
+                Console.WriteLine(course);
+            }
+            // Read studentCourses from CSV
+            var studentCourses = ReadFromCSv("C:\\Users\\Hp\\source\\repos\\FileStream\\StudentCourses.csv", parseStudentCourse);
+            // Display studentCourses
+            Console.WriteLine("\nStudentCourses:");
+            foreach (var studentCourse in studentCourses)
+            {
+                Console.WriteLine(studentCourse);
+            }
+            var results = (from student in students
+                           join sc in studentCourses on student.StudentId equals sc.StudentId
+                           join c in courses on sc.CourseId equals c.CourseId
+                           select new
+                           {
+                               student.StudentId,
+                               student.StudentName,
+                               c.CourseId,
+                               c.CourseName
+                           })
+            .ToList();
+            //Write the output of the inner join to the JoinResult.csv File.
+            QueryAndWriteToCsv(results, result => result.StudentName, "C:\\Users\\Hp\\source\\repos\\FileStream\\JoinResult.csv");
+
+            //Write the sorted students  to the SortedStudents.csv File.
+            QueryAndWriteToCsv(students, student => student.StudentName, "C:\\Users\\Hp\\source\\repos\\FileStream\\SortedStudents.csv");
+            //Write the  students that are older than 20  to the GreaterThan20Students.csv File.
+            var greaterThan20 = students.Where(student => student.StudentAge > 20).ToList();
+            QueryAndWriteToCsv(greaterThan20, student => student.StudentName, "C:\\Users\\Hp\\source\\repos\\FileStream\\GreaterThan20Students.csv");
+            //Write the  average  Age of students  to the averageAge.csv File.
+            double averageAge = students.Average(student => student.StudentAge);
+            WriteToCsv(new List<double> { averageAge }, "C:\\Users\\Hp\\source\\repos\\FileStream\\averageAge.csv");
+
+            Console.ReadKey();
+        }
+
+        static void QueryAndWriteToCsv<T, TKey>(List<T> records, Func<T, TKey> keySelector, string filePath)
+        {
+            try
+            {
+                var QueryRecords = records.OrderBy(keySelector).ToList();
+
+                if (IsExist(filePath))
+                {
+                    using (var writer = new StreamWriter(filePath))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.WriteRecords(QueryRecords);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"The file {filePath} doesn't exist.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        static void WriteToCsv<T>(List<T> records, string filePath)
+        {
+            try
+            {
+                if (IsExist(filePath))
+                {
+                    using (var writer = new StreamWriter(filePath))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.WriteRecords(records);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"The file {filePath} doesn't exist.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        static List<T> ReadFromCSv<T>(string fileName, Func<string, T> parseFunction)
+        {
+            List<T> records = new List<T>();
+
+            if (IsExist(fileName))
+            {
+                string[] csvLines = File.ReadAllLines(fileName);
+
+                // Skip header row
+                for (int i = 1; i < csvLines.Length; i++)
+                {
+                    T record = parseFunction(csvLines[i]);
+                    records.Add(record);
+                }
+
+
+            }
+            else
+            {
+                Console.WriteLine($"The file {fileName} doesn't exist.");
             }
 
+            return records;
         }
-        else
+
+       static bool IsExist(string fileName)
         {
-           Console.WriteLine($"The file {fileName} doesn't exist.");
+            return File.Exists(fileName);
         }
-
-        
-
-        var sortedStudents = students.OrderBy(student => student.StudentName);
-   
-        string path = "C:\\Users\\Hp\\source\\repos\\FileStream\\SortedStudents.csv";
-        if (IsExist(path))
-        {
-            using var writer = new StreamWriter(path);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
-
-            csv.WriteHeader<Student>();
-            csv.NextRecord();
-            foreach (var student in sortedStudents)
-            {
-                csv.WriteRecord(student);
-                csv.NextRecord();
-            }
-        }
-        else
-        {
-            Console.WriteLine($"The file {fileName} doesn't exist.");
-        }
-
-        var greaterThan20 = students.Where(std => std.StudentAge > 20);
-        Console.WriteLine("\nNames of students who are older than 20 years:");
-        foreach (var student in greaterThan20)
-        {
-            Console.WriteLine($"Name: {student.StudentName}, Age: {student.StudentAge}");
-        }
-
-        int averageAge = (int)students.Average(student => student.StudentAge);
-        Console.WriteLine($"\nAverage age of all students: {averageAge}\n");
-
-
-        Console.ReadKey();
     }
+
 }

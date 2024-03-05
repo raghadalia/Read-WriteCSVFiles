@@ -11,12 +11,10 @@ namespace FileStream
     {
         static void Main(string[] args)
         {
-
             // Define delegates for parsing student and course records
             Func<string, ParseStudent> parseStudent = line => new ParseStudent(line);
             Func<string, ParseCourse> parseCourse = line => new ParseCourse(line);
             Func<string, ParseStudentCourses> parseStudentCourse = line => new ParseStudentCourses(line);
-
             // Read students from CSV
             string studentRelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\students.csv");
             string courseRelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\Courses.csv");
@@ -26,14 +24,12 @@ namespace FileStream
             string linq3RelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\averageAge.csv");
             string linq4RelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\JoinResult.csv");
             var students = ReadFromCSv(studentRelativePath, parseStudent);
-
             // Display students
             Console.WriteLine("Students:");
             foreach (var student in students)
             {
                 Console.WriteLine(student);
             }
-
             // Read courses from CSV
             var courses = ReadFromCSv(courseRelativePath, parseCourse);
 
@@ -62,7 +58,6 @@ namespace FileStream
                                c.CourseName
                            })
             .ToList();
-
             WriteToCsv(results, linq4RelativePath);
             var sortedStudents = students.OrderBy(student => student.StudentName).ToList();
             //Write the sorted students  to the SortedStudents.csv File.
@@ -76,12 +71,10 @@ namespace FileStream
 
             Console.ReadKey();
         }
-
         static void WriteToCsv<T>(List<T> records, string filePath)
         {
             StreamWriter writer = null;
             CsvWriter csv = null;
-
             try
             {
                 if (IsExist(filePath))
@@ -115,19 +108,14 @@ namespace FileStream
                 }
             }
         }
-
-
-
         static List<T> ReadFromCSv<T>(string fileName, Func<string, T> parseFunction)
         {
             List<T> records = new List<T>();
-
             try
             {
                 if (IsExist(fileName))
                 {
                     string[] csvLines = File.ReadAllLines(fileName);
-
                     // Skip header row
                     for (int i = 1; i < csvLines.Length; i++)
                     {
@@ -140,25 +128,19 @@ namespace FileStream
                     Console.WriteLine($"The file {fileName} doesn't exist.");
                 }
             }
-
             catch (IOException ex)
             {
-
                 Console.WriteLine($"An error occurred while reading the file: {ex.Message}");
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine($"An unexpected error occurred: {ex.Message}");
             }
             return records;
         }
-
-
         static bool IsExist(string fileName)
         {
             return File.Exists(fileName);
         }
     }
-
 }

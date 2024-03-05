@@ -9,15 +9,11 @@ namespace FileStream
     {
         [Name("StudentId")]
         public int StudentId { get; set; }
-
-
         [Name("CourseId")]
         public int CourseId { get; set; }
         public ParseStudentCourses(string rowData)
         {
-
             string[] data = rowData.Split(',');
-
             // Parse data into properties
             try
             {
@@ -28,10 +24,7 @@ namespace FileStream
                 // Parse data into properties
                 if (int.TryParse(data[1], out int courseId) && courseId > 0)
                 {
-                    
                         this.CourseId = courseId;
-                    
-                    
                 }
                 else
                 {
@@ -39,10 +32,7 @@ namespace FileStream
                 }
                 if (int.TryParse(data[0], out int studentId) && studentId > 0)
                 {
-
-                    
                         this.StudentId = studentId;
-                    
                 }
                 else
                 {
@@ -51,22 +41,15 @@ namespace FileStream
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine($"Error parsing data: {ex.Message}");
-
             }
-
-
         }
-
         public override string ToString()
         {
             string str = $"StudentId: {this.StudentId},CourseId: {this.CourseId}";
 
             return str;
         }
-
-
     }
 }
 

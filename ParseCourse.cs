@@ -9,11 +9,8 @@ namespace FileStream
     class ParseCourse
     {
         [Name("CourseName")]
-
         public string CourseName { get; private set; }
-
         [Name("CourseId")]
-        
         public int CourseId { get; private set; }
         private static HashSet<int> uniqueCourseIds = new HashSet<int>();
         public ParseCourse(string rowData)
@@ -56,15 +53,12 @@ namespace FileStream
                 Console.WriteLine ($"Error parsing data: {ex.Message}");
 
             }
-
         }
-
         public override string ToString()
         {
             string str = $"CourseId: {this.CourseId},CourseName: {this.CourseName}";
 
             return str;
         }
-
     }
 }

@@ -11,11 +11,8 @@ namespace FileStream
     {
         [Name("Student Name")]
         public string StudentName { get; private set; }
-
-
         [Name("Student Id")]
         public int StudentId { get; private set; }
-
         [Name("Student Age")]
         public int StudentAge { get; private set; }
         private static HashSet<int> uniqueCourseIds = new HashSet<int>();
@@ -29,7 +26,7 @@ namespace FileStream
                     throw new ArgumentException("Invalid number of fields it should be three values separated by commas.");
                 }
                 // Parse data into properties
-                if (int.TryParse(data[0], out int studentId)&& studentId>0)
+                if (int.TryParse(data[0], out int studentId) && studentId > 0)
                 {
 
                     if (uniqueCourseIds.Add(studentId))
@@ -78,7 +75,6 @@ namespace FileStream
                 // Handle other exceptions
                 Console.WriteLine($"An unexpected error occurred: {ex.Message}");
             }
-
         }
         public override string ToString()
         {
@@ -86,9 +82,6 @@ namespace FileStream
 
             return str;
         }
-
-
     }
-
 }
 

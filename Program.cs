@@ -18,7 +18,14 @@ namespace FileStream
             Func<string, ParseStudentCourses> parseStudentCourse = line => new ParseStudentCourses(line);
 
             // Read students from CSV
-            var students = ReadFromCSv("C:\\Users\\Hp\\source\\repos\\FileStream\\students.csv", parseStudent);
+            string studentRelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\students.csv");
+            string courseRelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\Courses.csv");
+            string studentCoursesRelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\StudentCourses.csv");
+            string liq1RelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\SortedStudents.csv");
+            string linq2RelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\GreaterThan20Students.csv");
+            string linq3RelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\averageAge.csv");
+            string linq4RelativePath = Path.Combine(Directory.GetCurrentDirectory(), "CSVFiles\\JoinResult.csv");
+            var students = ReadFromCSv(studentRelativePath, parseStudent);
 
             // Display students
             Console.WriteLine("Students:");
@@ -28,7 +35,7 @@ namespace FileStream
             }
 
             // Read courses from CSV
-            var courses = ReadFromCSv("C:\\Users\\Hp\\source\\repos\\FileStream\\Courses.csv", parseCourse);
+            var courses = ReadFromCSv(courseRelativePath, parseCourse);
 
             // Display courses
             Console.WriteLine("\nCourses:");
@@ -37,7 +44,7 @@ namespace FileStream
                 Console.WriteLine(course);
             }
             // Read studentCourses from CSV
-            var studentCourses = ReadFromCSv("C:\\Users\\Hp\\source\\repos\\FileStream\\StudentCourses.csv", parseStudentCourse);
+            var studentCourses = ReadFromCSv(studentCoursesRelativePath, parseStudentCourse);
             // Display studentCourses
             Console.WriteLine("\nStudentCourses:");
             foreach (var studentCourse in studentCourses)
@@ -56,16 +63,16 @@ namespace FileStream
                            })
             .ToList();
 
-            WriteToCsv(results, "C:\\Users\\Hp\\source\\repos\\FileStream\\JoinResult.csv");
+            WriteToCsv(results, linq4RelativePath);
             var sortedStudents = students.OrderBy(student => student.StudentName).ToList();
             //Write the sorted students  to the SortedStudents.csv File.
-            WriteToCsv(sortedStudents, "C:\\Users\\Hp\\source\\repos\\FileStream\\SortedStudents.csv");
+            WriteToCsv(sortedStudents, liq1RelativePath);
             //Write the  students that are older than 20  to the GreaterThan20Students.csv File.
             var greaterThan20 = students.Where(student => student.StudentAge > 20).ToList();
-            WriteToCsv(greaterThan20, "C:\\Users\\Hp\\source\\repos\\FileStream\\GreaterThan20Students.csv");
+            WriteToCsv(greaterThan20,linq2RelativePath);
             //Write the  average  Age of students  to the averageAge.csv File.
             double averageAge = students.Average(student => student.StudentAge);
-            WriteToCsv(new List<double> { averageAge }, "C:\\Users\\Hp\\source\\repos\\FileStream\\averageAge.csv");
+            WriteToCsv(new List<double> { averageAge }, linq3RelativePath);
 
             Console.ReadKey();
         }

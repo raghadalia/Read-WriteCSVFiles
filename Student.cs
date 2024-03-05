@@ -11,14 +11,14 @@ namespace CSVReader_Class
 {
     public class Student
     {
-        [Name("Student Name")]
+        [Name("StudentName")]
         public string? StudentName { get; set; }
 
 
-        [Name("Student Id")]
+        [Name("StudentId")]
         public int? StudentId { get; set; }
 
-        [Name("Student Age")]
+        [Name("StudentAge")]
         public int? StudentAge { get; set; }
 
         public Student(string rowData)

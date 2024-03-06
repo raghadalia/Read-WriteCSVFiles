@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace FileStream
 {
-    public class ParseStudent
+        public class ParseStudent
     {
         [Name("Student Name")]
         public string StudentName { get; private set; }
@@ -19,8 +19,6 @@ namespace FileStream
         public ParseStudent(string rowData)
         {
             string[] data = rowData.Split(',');
-            try
-            {
                 if (data.Length != 3)
                 {
                     throw new ArgumentException("Invalid number of fields it should be three values separated by commas.");
@@ -60,28 +58,7 @@ namespace FileStream
                     throw new ArgumentException("Invalid StudentAge. Expeceted an integer value");
                 }
             }
-            catch (FormatException ex)
-            {
-                // Handle FormatException
-                Console.WriteLine($"Error parsing data: {ex.Message}");
-            }
-            catch (OverflowException ex)
-            {
-                // Handle OverflowException (value is too large or too small)
-                Console.WriteLine($"Error parsing data: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                // Handle other exceptions
-                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
-            }
-        }
-        public override string ToString()
-        {
-            string str = $"StudentId: {this.StudentId}, Name: {this.StudentName} , Age: {this.StudentAge}";
-
-            return str;
+           
         }
     }
-}
 

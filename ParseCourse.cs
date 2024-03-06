@@ -16,8 +16,6 @@ namespace FileStream
         public ParseCourse(string rowData)
         {
             string[] data = rowData.Split(',');
-            try
-            {
                 if (data.Length != 2)
                 {
                     throw new ArgumentException("Invalid number of fields .Expected have two values separated by commas.");
@@ -46,19 +44,6 @@ namespace FileStream
                 {
                     throw new ArgumentException("Course Name must be a string not empty or spaces");
                 }
-            }
-            catch (Exception ex)
-            {
-               
-                Console.WriteLine ($"Error parsing data: {ex.Message}");
-
-            }
-        }
-        public override string ToString()
-        {
-            string str = $"CourseId: {this.CourseId},CourseName: {this.CourseName}";
-
-            return str;
         }
     }
 }

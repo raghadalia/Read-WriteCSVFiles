@@ -37,7 +37,14 @@ namespace FileStream
                     throw new ArgumentException("Invalid StudentID. Expeceted an integer value");
                 }
             }
+        public override string ToString()
+        {
+            string str = $"StudentId: {this.StudentId},CourseId: {this.CourseId}";
+
+            return str;
         }
     }
+    
+}
 
 

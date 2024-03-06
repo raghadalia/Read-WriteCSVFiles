@@ -58,7 +58,12 @@ namespace FileStream
                     throw new ArgumentException("Invalid StudentAge. Expeceted an integer value");
                 }
             }
-           
+        public override string ToString()
+        {
+            string str = $"StudentId: {this.StudentId},StudentName: {this.StudentName},StudentAge: {this.StudentAge}";
+
+            return str;
         }
+    }
     }
 

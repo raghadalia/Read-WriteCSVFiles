@@ -45,5 +45,11 @@ namespace FileStream
                     throw new ArgumentException("Course Name must be a string not empty or spaces");
                 }
         }
+        public override string ToString()
+        {
+            string str = $"CourseId: {this.CourseId},CourseName: {this.CourseName}";
+
+            return str;
+        }
     }
 }
